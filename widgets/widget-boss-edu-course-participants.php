@@ -71,7 +71,6 @@ class Boss_LearnDash_Course_Participants_Widget extends WP_Widget {
 		if ( isset( $instance['title'] ) ) {
 			$title = apply_filters('widget_title', $instance['title'], $instance, $this->id_base );
 		}
-		$limit = 5;
 		if ( isset( $instance['limit'] ) && is_array( $instance['limit'] ) && 0 < count( $instance['limit'] ) ) {
 			$limit = intval( $instance['limit'] );
 		}

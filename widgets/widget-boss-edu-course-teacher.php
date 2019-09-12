@@ -172,7 +172,7 @@ class Boss_LearnDash_Course_Teacher_Widget extends WP_Widget {
 
 		$course_by_text = sprintf( __( '%s by', 'boss-learndash' ), LearnDash_Custom_Label::get_label( 'course' ) );
         ?>
-        <header id="boss-ld-teacher-widget">
+        <header id="<?php $id = uniqid('teacher-widget-'); echo $id; ?>">
             <span>
                 <p><?php echo apply_filters( 'bb_course_by_text', $course_by_text ); ?></p>
                 <p><?php echo $author; ?></p>
@@ -186,8 +186,6 @@ class Boss_LearnDash_Course_Teacher_Widget extends WP_Widget {
             <?php
 
             if ( is_user_logged_in() ) {
-
-	            $html = '';
 
                 if ( isset( $_GET['contact'] ) ) {
 
@@ -203,7 +201,7 @@ class Boss_LearnDash_Course_Teacher_Widget extends WP_Widget {
                         $contact_button_text = sprintf( __( 'Contact %s Teacher', 'boss-learndash' ), LearnDash_Custom_Label::get_label( 'course' ) );
                     }
 
-                    $html = '<p><a class="button send-message-button" href="' . esc_url( $href ) . '#boss-ld-teacher-widget">' . apply_filters( 'bb_contact_button_text', $contact_button_text ) . '</a></p>';
+                    $html = '<p><a class="button send-message-button" href="' . esc_url( $href ) . '#' . $id . '">' . apply_filters( 'bb_contact_button_text', $contact_button_text ) . '</a></p>';
                 }
 
                 echo $html;

@@ -240,7 +240,7 @@ class Boss_LearnDash_Course_Progress_Widget extends WP_Widget {
 						'learndash_pager.php',
 						array(
 							'pager_results' => $course_lessons_results['pager'],
-							'pager_context' => 'course_navigation_widget',
+							'pager_context' => 'course_lessons_widget',
 						)
 					);
 				}

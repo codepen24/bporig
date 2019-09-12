@@ -50,14 +50,14 @@ endif;
 									?>
 									<ul class="post-categories"><?php
 										foreach ( $category_list as $category ) {
-											if ( $category instanceof WP_Term && trim( $category->name ) !== 'Uncategorized' ) {
+											if ( trim( $category->name ) != "Uncategorized" ) {
 												?>
 												<li><a rel="category tag" href="<?php echo get_term_link( $category ) . '?post_type=sfwd-courses'; ?>"><?php echo $category->name; ?></a></li><?php
 											}
 										}
 
 										foreach ( $ld_category_list as $category ) {
-											if ( $category instanceof WP_Term && trim( $category->name ) !== 'Uncategorized' ) {
+											if ( trim( $category->name ) != "Uncategorized" ) {
 												?>
 												<li><a rel="category tag" href="<?php echo get_term_link( $category ); ?>"><?php echo $category->name; ?></a></li><?php
 											}
@@ -75,7 +75,7 @@ endif;
 					</section>
 
 					<div id="course-video">
-						<a href="#" id="hide-video" class="button"><i class="fa fa-times"></i></a>
+						<a href="#" id="hide-video" class="button"><i class="fa fa-close"></i></a>
 						<?php
 						/**
 						 * sensei_course_meta_video hook
@@ -130,13 +130,11 @@ endif;
 								?>
 								<span id='learndash_course_status'>
 									<?php
-									$course_status = learndash_course_status( $course_id, null, true );
+									$course_status = learndash_course_status( $course_id, null );
 
-									if ( $course_status != 'not-started' && $course_status != 'completed' ) {
+									if ( trim( $course_status ) != 'Not Started' && trim( $course_status ) != 'Completed' ) {
 										echo '<i class="fa fa-spinner"></i>';
 									}
-
-									$course_status = learndash_course_status( $course_id, null );
 
 									echo $course_status;
 									?>

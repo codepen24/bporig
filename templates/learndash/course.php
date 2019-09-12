@@ -31,8 +31,6 @@
  */
 ?>
 
-<?php global $course_pager_results; ?>
-
 <!-- Container added by boss -->
 <div class="lms-post-content">
 	<?php if ( $logged_in ) : ?>
@@ -72,7 +70,7 @@ if ( $has_course_content ) {
 	$show_course_content = true;
 
 	if ( !$has_access ) :
-		if ( isset( $course_meta[ 'sfwd-courses_course_disable_content_table' ] ) && $course_meta[ 'sfwd-courses_course_disable_content_table' ] == 'on' ) :
+		if ( $course_meta[ 'sfwd-courses_course_disable_content_table' ] == 'on' ) :
 			$show_course_content = false;
 		endif;
 	endif;
@@ -121,8 +119,7 @@ if ( $has_course_content ) {
 					</div>
 
 					<div id="lessons_list" class="lessons_list">
-						<?php 
-                        foreach ( $lessons as $lesson ) { ?>
+						<?php foreach ( $lessons as $lesson ) { ?>
 							<?php
 							/* Lesson Topis */
 							$topics	 = @$lesson_topics[ $lesson[ 'post' ]->ID ];
@@ -140,14 +137,8 @@ if ( $has_course_content ) {
 							$lesson_meta_data = array();
 
 							if ( is_array( $topics ) && 0 < count( $topics ) ) {
-								$lesson_topics_dots  = learndash_topic_dots( $lesson['post']->ID, false, 'array', null, $course_id );
-								if( $lesson_topics_dots && !empty($lesson_topics_dots) ) {
-									$lesson_topics_count = count( $lesson_topics_dots );
-                                } else {
-									$lesson_topics_count = 0;
-                                }
 								$lesson_meta_data[] = sprintf(
-										_n( '%s %2$s', '%s %3$s', $lesson_topics_count, 'boss-learndash' ), $lesson_topics_count,
+										_n( '%s %2$s', '%s %3$s', count( $topics ), 'boss-learndash' ), count( $topics ),
 										LearnDash_Custom_Label::get_label( 'topic' ),
 										LearnDash_Custom_Label::get_label( 'topics' )
 								);
@@ -183,43 +174,28 @@ if ( $has_course_content ) {
                                     );
 								}
 
-							    $paged_values = learndash_get_lesson_topic_paged_values();
-
 								if ( !empty( $topics ) ) {
 									?>
-                                    <div id='learndash_topic_dots-<?php echo esc_attr( $lesson['post']->ID ); ?>' class="learndash_topic_dots type-list" <?php
-									if ( $paged_values['lesson'] == $lesson['post']->ID ) {
-										echo ' style="display:block;"';
-									}
-									?>>
-                                        <ul>
-											<?php $odd_class = ''; ?>
-											<?php foreach ( $topics as $key => $topic ) : ?>
-												<?php $odd_class       = empty( $odd_class ) ? 'nth-of-type-odd' : ''; ?>
-												<?php $completed_class = empty( $topic->completed ) ? 'topic-notcompleted' : 'topic-completed'; ?>
-                                                <li class='<?php echo esc_attr( $odd_class ); ?>'>
+									<div id="learndash_topic_dots-<?php echo esc_attr( $lesson[ 'post' ]->ID ); ?>" class="learndash_topic_dots type-list">
+										<ul>
+											<?php
+											$odd_class = '';
+
+											foreach ( $topics as $key => $topic ) {
+												$odd_class		 = empty( $odd_class ) ? 'nth-of-type-odd' : '';
+												$completed_class = empty( $topic->completed ) ? 'topic-notcompleted' : 'topic-completed';
+												?>
+												<li class="<?php echo $odd_class; ?>">
 													<span class="topic_item">
-														<a class='<?php echo esc_attr( $completed_class ); ?>' href='<?php echo esc_attr( learndash_get_step_permalink( $topic->ID, $course_id ) ); ?>' title='<?php echo esc_attr( $topic->post_title ); ?>'>
-															<span><?php echo $topic->post_title; ?></span>
+														<a class="<?php echo $completed_class; ?>" href="<?php echo esc_attr( learndash_get_step_permalink( $topic->ID, $course_id ) ); ?>" title="<?php echo $topic->post_title; ?>">
+															<?php echo $topic->post_title; ?>
 														</a>
 													</span>
-                                                </li>
-											<?php endforeach; ?>
-                                        </ul>
-										<?php
-										if ( isset( $course_pager_results[ $lesson['post']->ID ]['pager'] ) ) {
-											echo SFWD_LMS::get_template(
-												'learndash_pager.php',
-												array(
-													'pager_results' => $course_pager_results[ $lesson['post']->ID ]['pager'],
-													'pager_context' => 'course_topics',
-													'href_query_arg' => 'ld-topic-page',
-													'href_val_prefix' => $lesson['post']->ID . '-'
-												)
-											);
-										}
-										?>
-                                    </div><?php
+												</li><?php
+											}
+											?>
+										</ul>
+									</div><?php
 								}
 								?>
 
@@ -230,12 +206,12 @@ if ( $has_course_content ) {
 
 				</div>
 				<?php
-				global $course_pager_results;
-				if ( isset( $course_pager_results['pager'] ) ) {
+				global $course_lessons_results;
+				if ( isset( $course_lessons_results['pager'] ) ) {
 					echo SFWD_LMS::get_template(
 						'learndash_pager.php',
 						array(
-							'pager_results' => $course_pager_results['pager'],
+							'pager_results' => $course_lessons_results['pager'],
 							'pager_context' => 'course_lessons'
 						)
 					);
@@ -244,19 +220,15 @@ if ( $has_course_content ) {
                 <?php
 			endif;
 
-			if ( ! empty( $lessons ) ) {
-				if ( ( isset( $course_pager_results['pager'] ) ) && ( !empty( $course_pager_results['pager'] ) ) ) {
-					if ( $course_pager_results['pager']['paged'] == $course_pager_results['pager']['total_pages'] ) {
-						$show_course_quizzes = true;
-					} else {
-						$show_course_quizzes = false;
-					}
-				} else {
-					$show_course_quizzes = true;
-				}
-			} else {
-				$show_course_quizzes = true;
-			}
+            if ( ( isset( $course_lessons_results['pager'] ) ) && ( !empty( $course_lessons_results['pager'] ) ) ) {
+                if ( $course_lessons_results['pager']['paged'] == $course_lessons_results['pager']['total_pages'] ) {
+                    $show_course_quizzes = true;
+                } else {
+                    $show_course_quizzes = false;
+                }
+            } else {
+                $show_course_quizzes = true;
+            }
 			/* Show Quiz List */
 		if ( $show_course_quizzes == true ) {
 			if (!empty($quizzes)) {

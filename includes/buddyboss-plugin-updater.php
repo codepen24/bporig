@@ -68,26 +68,34 @@ if( !function_exists( 'bboss_notice_install_updater' ) ) {
 if( !function_exists( 'bblicenses_switch__show_admin_notices' ) ){
     function bblicenses_switch__show_admin_notices(){
         if( !get_transient( 'bblicenses_switch__show_admin_notices' ) ){
-	        $api_host  = 'https://buddyboss.com/';
-	        $show_admin_notices = 'no';
+            $api_host  = 'https://buddyboss.com/';
+            $http_username     = '';
+            $http_password     = '';
 
-	        //do an api request
-	        $request_params = array(
-		        'bboss_license_api' => '1',
-		        'request'           => 'check-switch',
-		        'switch'            => 'show_admin_notices',
-	        );
+            $show_admin_notices = 'no';
 
-	        $request_url = add_query_arg( $request_params, $api_host );
+            //do an api request
+            $request_params = array(
+                'bboss_license_api' => '1',
+                'request'           => 'check-switch',
+                'switch'            => 'show_admin_notices',
+            );
 
-	        $q_response = wp_remote_get( $request_url, array( 'timeout' => 50 ) );
+            $request_url = add_query_arg( $request_params, $api_host );
 
-	        if( !is_wp_error( $q_response ) && $q_response['response']['code'] == 200 ){
-		        $response = (array) json_decode( $q_response['body'] );
-		        if( $response['status'] && $response['val'] == 'yes' ){
-			        $show_admin_notices = 'yes';
-		        }
-	        }
+            if( $is_http_auth_req ){
+                $headers = array( 'Authorization' => 'Basic ' . base64_encode( "{$http_username}:{$http_password}" ) );
+                $q_response = wp_remote_get( $request_url, array( 'headers' => $headers, 'timeout' => 50 ) );
+            } else {
+                $q_response = wp_remote_get( $request_url, array( 'timeout' => 50 ) );
+            }
+
+            if( !is_wp_error( $q_response ) && $q_response['response']['code'] == 200 ){
+                $response = (array) json_decode( $q_response['body'] );
+                if( $response['status'] && $response['val'] == 'yes' ){
+                    $show_admin_notices = 'yes';
+                }
+            }
 
             set_transient( 'bblicenses_switch__show_admin_notices', $show_admin_notices, 2 * HOUR_IN_SECONDS );
         }

@@ -20,7 +20,7 @@ if ( $courses_registered ) {
 					echo get_the_post_thumbnail( $course_id );
 				} else {
 					?>
-					<img src="<?php is_ssl() ? 'https' : 'http'; ?>://placehold.it/360x250&text=Course" alt="" />
+					<img src="http://placehold.it/360x250&text=Course" alt="" />
 					<?php
 				}
 			} ?><h2 class="ld-entry-title entry-title"><a href="<?php echo get_permalink( $course_id ) ?>"  rel="bookmark"><?php echo get_the_title( $course_id ) ?></a></h2>

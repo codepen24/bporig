@@ -131,20 +131,6 @@ if ( $show_content ) {
 				</ul>
 			</div>
 		</div><?php
-
-		global $course_pager_results;
-		if ( isset( $course_pager_results[ $post->ID ]['pager'] ) ) {
-			echo SFWD_LMS::get_template(
-				'learndash_pager.php',
-				array(
-					'pager_results'   => $course_pager_results[ $post->ID ]['pager'],
-					'pager_context'   => 'course_topics',
-					'href_query_arg'  => 'ld-topic-page',
-					'href_val_prefix' => $post->ID . '-'
-				)
-			);
-		}
-
 	}
 
 	/**

@@ -52,12 +52,9 @@ function boss_edu_payment_buttons( $course ) {
     //	extract( $courses_options );
     //}
 
-	$paypal_currency = '';
     $paypal_settings = LearnDash_Settings_Section::get_section_settings_all( 'LearnDash_Settings_Section_PayPal' );
     if ( ! empty( $paypal_settings ) ) {
         $paypal_settings['paypal_sandbox'] = $paypal_settings['paypal_sandbox'] == 'yes' ? 1 : 0;
-
-	    $paypal_currency = $paypal_settings['paypal_currency'];
     }
 
     if ( sfwd_lms_has_access( $course->ID, $user_id ) ) {
@@ -144,7 +141,7 @@ function boss_edu_payment_buttons( $course ) {
 
             // Rack up "Take this Course" button label with the Course Price
             $label_button_text  = LearnDash_Custom_Label::get_label( 'button_take_this_course' );
-	        $price_button_text  = sprintf( __( '%1$s %2$s - Purchase This Course', 'boss-learndash' ), $paypal_currency, $payment_params['price'] );
+            $price_button_text  = sprintf( __( '%1$s - Purchase This Course', 'boss-learndash' ), $payment_params['price'] );
 
             if ( ( !empty( $paypal_button ) ) && ( $payment_buttons != $paypal_button ) ) {
 

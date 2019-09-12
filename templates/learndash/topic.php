@@ -155,7 +155,7 @@ if ( $show_content ) {
 ?>
 
 <div id="learndash_back_to_lesson">
-	<a class="button" href="<?php echo get_permalink( $lesson_id ); ?>">
+	<a href='<?php echo get_permalink( $lesson_id ); ?>'>
 		<i class="fa fa-mail-reply"></i> <?php printf( __( "Back to %s", "boss-learndash" ), LearnDash_Custom_Label::get_label( 'lesson' ) ); ?>
 	</a>
 </div>

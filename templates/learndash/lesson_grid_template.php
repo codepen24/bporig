@@ -36,7 +36,7 @@ $class               = '';
                 </a>
             <?php else :?>
                 <a href="<?php the_permalink(); ?>" class="course-cover-image">
-                    <img alt="" src="<?php is_ssl() ? 'https' : 'http'; ?>://placehold.it/360x250&text=<?php echo LearnDash_Custom_Label::get_label( 'lesson' ) ?>"/>
+                    <img alt="" src="http://placehold.it/360x250&text=<?php echo LearnDash_Custom_Label::get_label( 'lesson' ) ?>"/>
                 </a>
             <?php endif;?>
         </div><!-- .course-inner -->

@@ -10,6 +10,7 @@
  *
  * @package LearnDash\Course
  */
+
 foreach ( $course_progress as $course_id => $coursep ) {
 
 	$course = get_post( $course_id );
@@ -24,7 +25,7 @@ foreach ( $course_progress as $course_id => $coursep ) {
 				echo get_the_post_thumbnail( $course_id );
 			} else {
 				?>
-				<img src="<?php echo is_ssl() ? 'https' : 'http'; ?>://placehold.it/360x250&text=Course" alt="" />
+				<img src="http://placehold.it/360x250&text=Course" alt="" />
 				<?php
 			} ?>
 		</div>

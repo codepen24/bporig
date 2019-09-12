@@ -722,7 +722,7 @@ class Boss_Learndash_Plugin
                             // Get Featured Image
                             $html .= get_the_post_thumbnail( $post->ID, 'course-archive-thumb', array( 'class' => 'woo-image thumbnail alignleft') );
                         } else {
-                            $html .= '<img src="' . ( is_ssl() ? 'https' : 'http' ) . '://placehold.it/360x250&text='. LearnDash_Custom_Label::get_label( 'course' ) .'">';
+                            $html .= '<img src="http://placehold.it/360x250&text='. LearnDash_Custom_Label::get_label( 'course' ) .'">';
                         }
                     $html .= '</div>';
                     $html .= '<div class="table-cell edu-activity-content">';
@@ -779,7 +779,7 @@ class Boss_Learndash_Plugin
                             // Get Featured Image
                             $html .= get_the_post_thumbnail( $post->ID, 'course-archive-thumb', array( 'class' => 'woo-image thumbnail alignleft') );
                         } else {
-                            $html .= '<img src="'. ( is_ssl() ? 'https' : 'http' ) .'://placehold.it/360x250&text=Lesson">';
+                            $html .= '<img src="http://placehold.it/360x250&text=Lesson">';
                         }
                     $html .= '</div>';
                     $html .= '<div class="table-cell edu-activity-content">';
@@ -881,11 +881,7 @@ class Boss_Learndash_Plugin
 	 */
 	public function boss_edu_register_widgets () {
 		// Widget List (key => value is filename => widget class).
-		$widget_list =  array(
-		        //'course-progress' 	=> 'Course_Progress',
-                'course-teacher' 	=> 'Course_Teacher',
-                'course-participants' => 'Course_Participants'
-        );
+		$widget_list =  array( 	'course-progress' 	=> 'Course_Progress', 'course-teacher' 	=> 'Course_Teacher', 'course-participants' => 'Course_Participants' );
 
 		foreach ( $widget_list as $key => $value ) {
 
@@ -907,10 +903,6 @@ class Boss_Learndash_Plugin
 
     public function boss_edu_learndash_templates($filepath, $name, $args, $echo, $return_file_path) {
 
-	    if ( ( is_admin() && ! wp_doing_ajax() ) || ( isset( $_REQUEST['shortcode_atts']['pagenow'] ) && 'profile.php' == $_REQUEST['shortcode_atts']['pagenow'] ) ) {
-            return $filepath;
-        }
-
         if($name == 'course') {
             return $this->boss_learndash_locate_template('course');
         }
@@ -920,9 +912,6 @@ class Boss_Learndash_Plugin
         if($name == 'course_progress_widget') {
             return $this->boss_learndash_locate_template('course_progress_widget');
         }
-	    if($name == 'course_navigation_widget') {
-		    return $this->boss_learndash_locate_template('course_navigation_widget');
-	    }
         if($name == 'course_list_template') {
             if($args["shortcode_atts"]["post_type"] == 'sfwd-lessons') {
                 return $this->boss_learndash_locate_template('lesson_grid_template');
@@ -949,7 +938,7 @@ class Boss_Learndash_Plugin
         if ( $name === 'course_registered_rows' ) {
 			return $this->boss_learndash_locate_template( 'course_registered_rows' );
 		}
-	    if ( $name === 'course_progress_rows' ) {
+		if ( $name === 'course_progress_rows' ) {
 			return $this->boss_learndash_locate_template( 'course_progress_rows' );
 		}
 
@@ -1357,13 +1346,13 @@ class Boss_Learndash_Plugin
         public function boss_edu_contact_teacher_ajax() {
             $msg_content = $_POST['content'];
             if ( empty( $msg_content ) ) {
-                _e( 'Failed ', 'boss-learndash' );
+                echo 'Failed';
                 die();
             }
             $sender_id = $_POST['sender_id'];
             $reciever_id = $_POST['reciever_id'];
             $course_id = $_POST['course_id'];
-            $subject = __( 'Regarding ', 'boss-learndash' ) .get_the_title($course_id);
+            $subject = 'Regarding ' .get_the_title($course_id);
 
             $args = array( 'recipients' => array($reciever_id), 'sender_id' => $sender_id, 'subject' => $subject, 'content' => $msg_content );
             $msg_id = messages_new_message( $args );
@@ -1406,15 +1395,9 @@ class Boss_Learndash_Plugin
             if( !$user_id )
                 return;
 
-	        $meta = get_post_meta( $course_id, '_sfwd-courses', true );
-	        $course_price_type = @$meta['sfwd-courses_course_price_type'];
-
-	        if ( 'free' != $course_price_type ) {
-	            return;
-            }
-
             $learners = array();
 
+            $meta = get_post_meta( $course_id, '_sfwd-courses', true );
             if ( ! empty( $meta['sfwd-courses_course_access_list'] ) ) {
                 $learners = explode( ',', $meta['sfwd-courses_course_access_list'] );
             }

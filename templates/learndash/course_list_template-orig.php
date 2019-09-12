@@ -15,7 +15,7 @@ $post_title			 = $post->post_title;
 $user_info			 = get_userdata( absint( $post->post_author ) );
 $author_link		 = !$bp ? get_author_posts_url( absint( $post->post_author ) ) : bp_core_get_user_domain( absint( $post->post_author ) );
 $author_avatar		 = get_avatar( $post->post_author, 75 );
-$author_display_name = $user_info->display_name;
+$author_display_name = $user_info ? $user_info->display_name : '';
 $author_id			 = $post->post_author;
 $course_lessons_list = apply_filters( 'boss_edu_course_lessons_list', learndash_get_course_lessons_list( $post_id, null, array( 'posts_per_page' => -1 ) ) );
 $total_lessons		 = ( is_array( $course_lessons_list ) ) ? count( $course_lessons_list ) : 0;
@@ -48,7 +48,7 @@ if ( is_null( $currency ) ) {
 
 $course_options 	= get_post_meta($post_id, "_sfwd-courses", true);
 $price 				= $course_options && isset($course_options['sfwd-courses_course_price']) ? $course_options['sfwd-courses_course_price'] : __( 'Free', 'boss-learndash' );
-$short_description 	= ( is_plugin_active('learndash-course-grid/learndash-course-grid.php') && isset( $course_options['sfwd-courses_course_short_description'] ) ) ?  $course_options['sfwd-courses_course_short_description'] :  get_the_excerpt($post_id);
+$short_description 	= ( is_plugin_active('learndash-course-grid/learndash_course_grid.php') && isset( $course_options['sfwd-courses_course_short_description'] ) ) ?  $course_options['sfwd-courses_course_short_description'] :  get_the_excerpt($post_id);
 
 $has_access   = sfwd_lms_has_access( $post_id, get_current_user_id() );
 $is_completed = learndash_course_completed( get_current_user_id(), $post_id );
@@ -141,18 +141,14 @@ if ( $has_access && ! $is_completed ) {
                 </p>
             </div>
 
-			<!-- <div class="caption">
+			<div class="caption">
 				<?php if(!empty($short_description)) { ?>
 					<p class="entry-content"><?php echo htmlspecialchars_decode( do_shortcode( $short_description ) ); ?></p>
 				<?php  } ?>
-			</div> -->
+			</div>
 
             <div class="sensei-course-meta">
-				<!-- <p class="ld_course_grid_button"><a class="button" role="button" href="<?php the_permalink( $post_id ); ?>" rel="bookmark"><?php echo esc_attr( $button_text ); ?></a></p> -->
-				<span class="course-lesson-count" style="float: left;"><?php 
-				$weeks = get_post_meta( $post->ID, '_wpdevlms-course-duration', true );
-				echo ((!empty($weeks) ? $weeks .' '. __( 'Weeks', 'learndash_course_grid' ) : ''));
-				 ?></span>
+				<p class="ld_course_grid_button"><a class="button" role="button" href="<?php the_permalink( $post_id ); ?>" rel="bookmark"><?php echo esc_attr( $button_text ); ?></a></p>
 				<span class="course-lesson-count"><?php echo $total_lessons . '&nbsp;' . apply_filters( 'learndash_lessons_text', LearnDash_Custom_Label::get_label( 'lessons' ) ); ?></span>
             </div>
 
